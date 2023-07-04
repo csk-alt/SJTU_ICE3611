@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search</title>
+    <link rel="shortcut icon" type="image/jpg" href="{{url_for('static', filename='icon.jpg')}}">
+    <style>
+        body{
+            background: #fff url("{{url_for('static', filename='bg2.jpg')}}") no-repeat fixed center top;
+            margin:10%;
+            margin-top: 5%;
+            background-size: cover;
+        }
+        div.main{
+            background: #fff;opacity: 0.7;
+            padding: 5%;
+            padding-top: 2%
+        }
+        p.url{
+            color: #090;
+        }
+        a{
+            text-decoration: none;
+        }
+        input.waay{
+            color: #000;
+            border: none;
+            font-size: medium;
+            background-color: #fff;
+            cursor: pointer;
+        }
+        img{
+            max-width: 33%;
+            height: auto;
+        }
+        a>input{
+            opacity: 0.7;
+        }
+        a>input#active{
+            opacity: 1.0;
+            font-size: 18px;
+        }
+        div.search{
+            display: flex;
+            flex-direction: row;
+        }
+        input[type=text]{
+            width: 600px;
+            height:40px;
+            border-radius: 20px;
+            font-size: 17px;
+        }
+        input[type=submit]{
+            border: none;
+            background-color: #ddd;
+            width: 20%;
+            height: 40%;
+            margin-top: 10px;
+            margin-left: 78%;
+            border-radius: 5px;
+            opacity: 1.0;
+        }
+        div.res{
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+    <h1>Search</h1>
+    <a href="/search">
+    <input id="active" class="waay" type="button" value="网页">
+    </a>
+    <a href="/searchimg">
+    <input class="waay" type="button" value="图片">
+    </a>
+    <div class="search">
+        <form action="searchres">
+        <!-- <label>keywords</label> -->
+        <input type="text" name="keywords"><br>
+        <input  type="submit" name="submit" value="搜索">
+        </form>
+    </div>
+    {% if keywords | length > 0 %}
+    <h1>Search Results for &quot;{{ keywords }}&quot;</h1>
+    <hr>
+    {% if results | length >0 %}
+    {% for result in results %}
+    <div class="res">
+        <a href={{result[1]}}>{{result[0]}}</a>
+        <p> {{result[2]}}</p>
+        <p class="url">{{result[1]}}</p>
+        <p></p><hr>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>There is no result relevant to &quot;{{keywords}}&quot;</p>
+    {% endif %}
+    {% endif %}
+</div>
+</body>
+</html>

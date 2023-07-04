@@ -1,0 +1,321 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <style>
+        body {color: #fff;background: #202020 url("{{url_for('static', filename='bg.jpg')}}") no-repeat fixed center top;opacity: 1.0;
+            background-size: cover;
+        }
+        div.h{
+            color:#000000;
+            text-align: center;
+            opacity: 1.0;
+            background-color: rgba(255,255,255,0.7);
+            width: 430px;
+            height:620px;
+            margin:auto;
+            margin-top:4%;
+            padding-top: 1%;
+            padding: 30px;
+        }
+        div.severity-slider{
+            margin: auto;
+            margin-top: 30px;
+            text-align: center;
+            width: 40%;
+            font-size: large;
+            display: inline-block;
+        }
+        div.question{
+            margin-top: -30px;
+            margin-right: -300px;
+        }
+        div.form-checkbox{
+            float: left;
+            margin-right: 10px;
+        }
+        button.question{
+            background-color:rgb(255, 255,255, 0.0);
+            border:none;
+            cursor: pointer;
+        }
+        input[type=text], select {
+            width: 30%;
+            padding: 12px 20px;
+            padding-right: 50px;
+            margin-bottom: 39px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: large;
+        }
+        input[type=file] {
+            /* width: 90%; */
+            /* padding: 12px 20px; */
+            margin-top: 59px;
+            margin-left: 35%;
+            /* display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            display: none; */
+        }
+        input[type=submit] {
+            width: 20%;
+            background-color: #3e3eeF;
+            color: white;
+            padding: 20px 20px;
+            margin-top: 5%;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: large;
+        }
+        label{
+            font-size: large;
+            margin-right: 10px;
+        }
+    </style>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Color Blind Simutator</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+       
+		<!-- All CSS Files Here -->
+        <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/et-line-fonts.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/ionicons.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/magnific-popup.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/meanmenu.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/global.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/responsive.css')}}">
+        <script src="{{url_for('static', filename='js/modernizr-2.8.3.min.js')}}"></script>
+        <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+        <script>
+            function checkLength(form){
+                let formData = new FormData(form);
+                if(formData.get("file").size > 100){
+                    return true;
+                }else{
+                    alert('Please choose the image first');
+                    return false;
+                }
+            }
+            function getv(form){
+                return form.nextElementSibling.value
+            }
+            $(document).ready(function(){
+                $("#upload-file").on("change",function(){
+                    var filePath = $(this).val();         //获取到input的value，里面是文件的路径
+                    var fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase();
+                    // 检查是否是图片
+                    if( !fileFormat.match(/.png|.jpg|.jpeg/) ) {
+                        error_prompt_alert('Must be png/jpg/jpeg');
+                        return;  
+                    }
+                    var src = window.URL.createObjectURL(this.files[0]); //转成可以在本地预览的格式
+                    $('#originImage').attr('src',src);
+                });
+            });
+            
+        </script>
+        <link rel="shortcut icon" href="static/picture/icon.ico">
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+ 		<!-- PRELOADER -->
+		<div class="page-loader">
+			<div class="loader">Loading...</div>
+		</div>
+		<!-- /PRELOADER -->       
+		<!-- header start -->
+		<header id="sticky-header">
+			<div class="header-area">
+				<div class="container sm-100">
+					<div class="row">
+						<div class="col-md-3 col-sm-2">
+							<div class="logo text-upper">
+								<h4>{{sim}}</h4>
+							</div>
+						</div>
+						<div class="col-md-9 col-sm-10">
+							<div class="menu-area hidden-xs">
+								<nav>
+									<ul class="basic-menu clearfix">
+										<li><a href="/simulator">simulator</a></li>
+										<li><a href="/corrector">corrector</a></li>
+									</ul>
+								</nav>							
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+		<!-- header end -->
+		
+		<!-- basic-breadcrumb start -->
+		<div class="basic-breadcrumb-area gray-bg ptb-70">
+			<div class="container">
+				<div class="basic-breadcrumb text-center">
+                    {% if origin_image %}
+                        <h3 class="">Oringal Image</h3>
+                        <img id="originImage" src={{origin_image}} width="30%">
+                        <form accept="" method="post" enctype="multipart/form-data">
+                            <input type="file" name="file" accept="image/jpg,image/png" id="upload-file"/><br>
+                            <input type="submit" id="search-submit" value="CORRECT" />
+                        </form>
+                    {% else %}
+                    <h3 class="">Please upload an image</h3>
+                    <form action="" method="post" enctype="multipart/form-data" onSubmit="return checkLength(this)">
+                        <!-- <label for="upload-file">UPLOAD IMAGE</label> -->
+                        <input type="file" name="file" accept="image/jpg,image/png" id="upload-file"/><br>
+                        <input type="submit" id="search-submit" value="UPLOAD" />
+                    </form>
+                    {% endif %}
+				</div>
+			</div>
+		</div>
+        
+        {% if result %}
+		<!-- basic-breadcrumb end -->
+		<!-- basic-blo-area -->
+		<div class="basic-blog-area ptb-90">
+			<div class="container">
+				<div class="row blog-masonry">
+					<div class="col-sm-6 col-md-4 blog-item">
+						<article class="post">
+							<div class="post-thumbnail">
+								<img src="static/picture/PROTAN_tem.png" alt="">
+							</div>
+							<div class="post-header">
+								<h2 class="post-title"><a href="javascript:;">Simulate result of protanopia</a></h2>
+							</div>
+						</article>
+					</div>
+					
+                    <div class="col-sm-6 col-md-4 blog-item">
+						<article class="post">
+							<div class="post-thumbnail">
+								<img src="static/picture/DEUTAN_tem.png" alt="">
+							</div>
+							<div class="post-header">
+								<h2 class="post-title"><a href="javascript:;">Simulate result of deuteranopia</a></h2>
+							</div>
+						</article>
+					</div>
+
+                    <div class="col-sm-6 col-md-4 blog-item">
+						<article class="post">
+							<div class="post-thumbnail">
+								<img src="static/picture/TRITAN_tem.png" alt="">
+							</div>
+							<div class="post-header">
+								<h2 class="post-title"><a href="javascript:;">Simulate result of tritanopia</a></h2>
+							</div>
+						</article>
+					</div>
+
+
+                    <div class="col-sm-6 col-md-4 blog-item">
+						<!-- POST -->
+						<article class="post">
+							<div class="post-thumbnail">
+								<img src="static/picture/PROTAN_corr_tem.png" alt="">
+							</div>
+							<div class="post-header">
+								<h2 class="post-title"><a href="javascript:;">Correct result of protanopia</a></h2>
+							</div>
+						</article>
+						<!-- /POST -->
+					</div>
+					
+                    <div class="col-sm-6 col-md-4 blog-item">
+						<!-- POST -->
+						<article class="post">
+							<div class="post-thumbnail">
+								<img src="static/picture/DEUTAN_corr_tem.png" alt="">
+							</div>
+							<div class="post-header">
+								<h2 class="post-title"><a href="javascript:;">Correct result of deuteranopia</a></h2>
+							</div>
+						</article>
+						<!-- /POST -->
+					</div>
+
+                    <div class="col-sm-6 col-md-4 blog-item">
+						<!-- POST -->
+						<article class="post">
+							<div class="post-thumbnail">
+								<img src="static/picture/TRITAN_corr_tem.png" alt="">
+							</div>
+							<div class="post-header">
+								<h2 class="post-title"><a href="javascript:;">Correct result of tritanopia</a></h2>
+							</div>
+						</article>
+						<!-- /POST -->
+					</div>
+
+                    <div class="col-sm-6 col-md-4 blog-item">
+						<!-- POST -->
+						<article class="post">
+							<div class="post-thumbnail">
+								<img src="static/picture/PROTAN_corrsim_tem.png" alt="">
+							</div>
+							<div class="post-header">
+								<h2 class="post-title"><a href="javascript:;">Image seen by Protanopia using the Protanopia error modification matrix</a></h2>
+							</div>
+						</article>
+						<!-- /POST -->
+					</div>
+					
+                    <div class="col-sm-6 col-md-4 blog-item">
+						<!-- POST -->
+						<article class="post">
+							<div class="post-thumbnail">
+								<img src="static/picture/DEUTAN_corrsim_tem.png" alt="">
+							</div>
+							<div class="post-header">
+								<h2 class="post-title"><a href="javascript:;">Image seen by Deuteranopia using the Deuteranopia error modification matrix</a></h2>
+							</div>
+						</article>
+						<!-- /POST -->
+					</div>
+
+                    <div class="col-sm-6 col-md-4 blog-item">
+						<!-- POST -->
+						<article class="post">
+							<div class="post-thumbnail">
+								<img src="static/picture/TRITAN_corrsim_tem.png" alt="">
+							</div>
+							<div class="post-header">
+								<h2 class="post-title"><a href="javascript:;">Image seen by Tritanopia using the Tritanopia error modification matrix</a></h2>
+							</div>
+						</article>
+						<!-- /POST -->
+					</div>
+					
+				</div>
+			</div>
+		</div>
+        {% endif %}
+
+		
+		<!-- All js plugins here -->
+        <script src="static/js/jquery-1.12.0.min.js"></script>
+        <script src="static/js/bootstrap.min.js"></script>
+        <script src="static/js/isotope.pkgd.min.js"></script>
+        <script src="static/js/imagesloaded.pkgd.min.js"></script>
+        <script src="static/js/jquery.magnific-popup.min.js"></script>
+        <script src="static/js/jquery.meanmenu.js"></script>
+        <script src="static/js/plugins.js"></script>
+        <script src="static/js/main.js"></script>
+    </body>
+</html>

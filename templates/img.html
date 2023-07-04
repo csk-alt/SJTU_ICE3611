@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Search</title>
+    <link rel="shortcut icon" type="image/jpg" href="{{url_for('static', filename='icon.jpg')}}">
+    <style>
+        body{
+            background: #fff url("{{url_for('static', filename='bg2.jpg')}}") no-repeat fixed center top;
+            margin:10%;
+            margin-top: 5%;
+            background-size: cover;
+        }
+        div.main{
+            background: rgba(255,255,255,0.7);
+            opacity: 1.0;
+            padding: 5%;
+            padding-top: 2%
+        }
+        p.url{
+            color: #090;
+        }
+        a{
+            text-decoration: none;
+        }
+        input.waay{
+            color: #000;
+            border: none;
+            font-size: medium;
+            background-color: transparent;
+            cursor: pointer;
+        }
+        img{
+            width: 100%;
+            height: auto;
+            opacity: 1.0;
+        }
+        .image{
+            width:32%;
+            height:auto;
+            margin-bottom:10px;
+            position:relative;
+            overflow:hidden;
+        }
+        div.image{
+            display: inline-block;
+        }
+        a>input{
+            opacity: 0.7;
+        }
+        a>input#active{
+            opacity: 1.0;
+            font-size: 18px;
+        }
+        div.search{
+            display: flex;
+            flex-direction: row;
+        }
+        input[type=text]{
+            width: 600px;
+            height:40px;
+            border-radius: 20px;
+            font-size: 17px;
+            background-color: transparent;
+        }
+        
+        input[type=submit]{
+            border: none;
+            background-color: #999;
+            width: 20%;
+            height: 40%;
+            margin-top: 10px;
+            margin-left: 78%;
+            border-radius: 5px;
+        }
+        .posttitle{
+            width:100%;
+            height:100%;
+            position:absolute;
+            background:url("{{url_for('static', filename='blur.png')}}") repeat;
+            display:table;
+            transition:opacity 0.3s;
+            -moz-transition:opacity 0.3s;
+            -webkit-transition:opacity 0.3s; 
+            -o-transition:opacity 0.3s;
+            opacity:0;
+        }
+        .image:hover .posttitle{
+            opacity:1.0;
+        }
+        .image-title{
+            font-size:1.4em;
+            color:#fff;
+            display:table-cell;
+            vertical-align:middle;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+    <h1>Image Search</h1>
+    <a href="/search">
+    <input class="waay" type="button" value="网页">
+    </a>
+    <a href="/searchimg">
+    <input id="active" class="waay" type="button" value="图片">
+    </a>
+    <div class="search">
+        <form action="searchimg">
+        <!-- <label>keywords</label> -->
+        <input type="text" name="keywords"><br>
+        <input type="submit" name="submit" value="搜索">
+        </form>
+    </div>
+    {% if keywords | length > 0 %}
+    <h1>Search Results for &quot;{{ keywords }}&quot;</h1>
+    <hr>
+    {% if results | length > 0%}
+    {% for result in results %}
+    <div class="image">
+        <a href={{result[1]}}>
+            <div class="posttitle">
+                <span class="image-title">{{result[2]}}</span>
+            </div>
+            <img src={{result[0]}} alt={{result[2]}}>
+            <!-- {{result[0]}} -->
+        </a>
+        <!-- <p> {{result[2]}}</p> -->
+        <!-- <p class="url">{{result[1]}}</p> -->
+        
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>There is no image relevant to &quot;{{keywords}}&quot;</p>
+    {%endif%}
+    {% endif %}
+</div>
+</body>
+</html>
